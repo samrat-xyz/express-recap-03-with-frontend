@@ -3,6 +3,8 @@ const cors = require('cors');
 
 const port = 3000;
 const app = express();
+app.use(express.json()); 
+
 app.use(cors())
 
 app.get('/',(req,res)=>{
@@ -52,7 +54,9 @@ app.get('/users',(req,res)=>{
 
 app.post('/users',(req,res)=>{
     const newUser = req.body;
-    console.log(newUser)
+    newUser.id = users.length + 1
+    users.push(newUser);
+    res.send(newUser)
 })
 
 app.listen(port)

@@ -1,89 +1,72 @@
-import React from "react";
+import React, { useRef } from "react";
+import Swal from "sweetalert2";
 
-function Modal() {
-  const handleSubmite = (e) => {
+function Modal({refetchUsers}) {
+  const modalRef = useRef(null);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+
     const form = e.target;
-    const name = form.name.value;
-    const email = form.email.value;
-    const role = form.role.value;
-    const age = form.age.value;
-    console.log({ name, email, role, age });
+
+    const newUserData = {
+      name: form.name.value,
+      email: form.email.value,
+      role: form.role.value,
+      age: Number(form.age.value),
+    };
+
+    fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUserData),
+    })
+      .then((res) => res.json())
+      .then(() => {
+    
+        form.reset();
+
+        
+        modalRef.current.close();
+        refetchUsers()
+
+        // optional success alert
+        Swal.fire("Success!", "User added successfully", "success");
+      })
+      .catch(() => {
+        Swal.fire("Error!", "Something went wrong", "error");
+      });
   };
 
   return (
     <div className="p-6">
-      {/* Open the modal */}
       <button
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-        onClick={() => document.getElementById("my_modal_1").showModal()}
+        onClick={() => modalRef.current.showModal()}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
       >
         Add User
       </button>
 
-      <dialog id="my_modal_1" className="modal">
-        <form
-          onSubmit={handleSubmite}
-          className="modal-box border p-6 flex flex-col gap-4"
-        >
-          <h2 className="text-xl font-semibold text-gray-800">Add User</h2>
+      <dialog ref={modalRef} className="modal">
+        <form onSubmit={handleSubmit} className="modal-box space-y-4">
+          <input name="name" placeholder="Name" required className="border p-2 w-full" />
+          <input name="email" type="email" placeholder="Email" required className="border p-2 w-full" />
+          <input name="role" placeholder="Role" required className="border p-2 w-full" />
+          <input name="age" type="number" placeholder="Age" required className="border p-2 w-full" />
 
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              name="name"
-              required
-              placeholder="Enter full name"
-              className="border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              required
-              placeholder="Enter email"
-              className="border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-gray-700">Role</label>
-            <input
-              type="text"
-              name="role"
-              required
-              placeholder="Enter role"
-              className="border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="font-medium text-gray-700">Age</label>
-            <input
-              type="number"
-              name="age"
-              required
-              placeholder="Enter age"
-              className="border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <div className="modal-action flex justify-end gap-3 mt-4">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-            >
+          <div className="modal-action">
+            <button type="submit" className="btn bg-blue-500 text-white">
               Submit
             </button>
-            <form method="dialog">
-              <button className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 transition">
-                Close
-              </button>
-            </form>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => modalRef.current.close()}
+            >
+              Close
+            </button>
           </div>
         </form>
       </dialog>
