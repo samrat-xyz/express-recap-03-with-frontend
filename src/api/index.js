@@ -50,5 +50,9 @@ app.get('/users',(req,res)=>{
     res.send(users)
 })
 
+app.post('/users',(req,res)=>{
+    const newUser = req.body;
+    console.log(newUser)
+})
 
 app.listen(port)
