@@ -32,7 +32,7 @@ function Modal({refetchUsers}) {
         modalRef.current.close();
         refetchUsers()
 
-        // optional success alert
+        
         Swal.fire("Success!", "User added successfully", "success");
       })
       .catch(() => {

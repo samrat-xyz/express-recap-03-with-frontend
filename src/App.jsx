@@ -9,7 +9,7 @@ function App() {
   const [usersPromise, setUsersPromise] = useState(fetchUsers());
 
   const refetchUsers = () => {
-    setUsersPromise(fetchUsers()); // 🔥 MAGIC LINE
+    setUsersPromise(fetchUsers()); 
   };
 
   return (
